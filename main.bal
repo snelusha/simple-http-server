@@ -19,4 +19,14 @@ service / on new http:Listener(8080) {
 
         return self.notes.get(id);
     }
+
+    
+    resource function post notes(Note note) returns Note|http:Conflict {
+        if (self.notes.hasKey(note.id)) {
+            return http:CONFLICT;
+        }
+
+        self.notes.add(note);
+        return note;
+    }
 }
