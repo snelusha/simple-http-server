@@ -42,4 +42,13 @@ service / on new http:Listener(8080) {
         self.notes.put(note);
         return note;
     }
+
+    resource function delete notes/[int id]() returns Note|http:NotFound {
+        if (!self.notes.hasKey(id)) {
+            return http:NOT_FOUND;
+        }
+
+        Note note = self.notes.remove(id);
+        return note;
+    }
 }
