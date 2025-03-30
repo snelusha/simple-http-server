@@ -1,16 +1,22 @@
 import ballerina/http;
-import ballerina/time;
 
 type Note record {
     readonly int id;
     string content;
-    time:Date created_at;
 };
 
 service / on new http:Listener(8080) {
-    private Note[] notes = [];
+    private table<Note> key(id) notes = table [];
 
     resource function get notes() returns Note[] {
-        return self.notes;
+        return self.notes.toArray();
+    }
+
+    resource function get notes/[int id]() returns Note|http:NotFound {
+        if (!self.notes.hasKey((id))) {
+            return http:NOT_FOUND;
+        }
+
+        return self.notes.get(id);
     }
 }
