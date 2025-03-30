@@ -29,4 +29,17 @@ service / on new http:Listener(8080) {
         self.notes.add(note);
         return note;
     }
+
+    resource function put notes/[int id](Note note) returns Note|http:NotFound|http:Conflict {
+        if (!self.notes.hasKey(id)) {
+            return http:NOT_FOUND;
+        }
+
+        if (self.notes.hasKey(note.id) && note.id != id) {
+            return http:CONFLICT;
+        }
+
+        self.notes.put(note);
+        return note;
+    }
 }
